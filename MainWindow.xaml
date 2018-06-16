@@ -20,16 +20,37 @@
                 <Label Content="Y: "></Label>
                 <Label Content="{Binding Position.Y}"></Label>
             </WrapPanel>
-            <Canvas Background="Aqua"
-                    Height="300"
-                    Width="300">
-                <Ellipse x:Name="Ball"
-                         Fill="Black"
-                         Canvas.Left="{Binding Position.X}"
-                         Canvas.Bottom="{Binding Position.Y}"
-                         Width="10"
-                         Height="10"></Ellipse>
-            </Canvas>
+
+            <!--<Ellipse x:Name="Ball"
+                                     Fill="Black"
+                                     Canvas.Left="{Binding Position.X}"
+                                     Canvas.Bottom="{Binding Position.Y}"
+                                     Width="10"
+                                     Height="10"></Ellipse>-->
+            <ItemsControl ItemsSource="{Binding Path=History}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Aqua"
+                                Height="300"
+                                Width="300">
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Fill="Black"
+                                 Width="5"
+                                 Height="5"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="FrameworkElement">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Bottom" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+            
             <WrapPanel>
                 <Button Content="Start"
                         Width="100"
@@ -46,6 +67,10 @@
                 <TextBox Text="{Binding Init_Velocity.Y}"/>
                 <Label Content="Init angle: "/>
                 <TextBox Text="{Binding Init_Angle}"/>
+                <Label Content="Max Time: "/>
+                <TextBox Text="{Binding MaxTime}"/>
+                <Label Content="x speed-up: "/>
+                <TextBox Text="{Binding SpeedUp}"/>
             </WrapPanel>
 
        

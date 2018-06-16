@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Otto;
@@ -24,6 +25,17 @@ namespace MechanicsSimulator
         }
 
         public decimal Time
+        {
+            get => Get<decimal>();
+            set => Set(value);
+        }
+
+        public decimal MaxTime
+        {
+            get => Get<decimal>();
+            set => Set(value);
+        }
+        public decimal SpeedUp
         {
             get => Get<decimal>();
             set => Set(value);
@@ -53,11 +65,12 @@ namespace MechanicsSimulator
 
         private void OnStartSimulation(object obj)
         {
+            History.Clear();
             Time = 0;
             Position.X = Init_Position.X;
             Position.Y = Init_Position.Y;
             SimulationOn = true;
-            Task.Run(() => RunSimulation());
+            RunSimulation();
         }
 
         public RelayCommand<object> StopSimulationCommand { get; set; }
@@ -78,24 +91,32 @@ namespace MechanicsSimulator
             Init_Velocity = new Vector2D(10, 10);
             Init_Angle = 45;
 
+            MaxTime = 10;
+            SpeedUp = 3;
+
             Position.PropertyChanged += Position_PropertyChanged;
             Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
 
             StartSimulationCommand.Execute(null);
         }
 
-        public void RunSimulation()
+        public async Task RunSimulation()
         {
             decimal timestep_s = 0.1m;
             int timestep_ms = (int) (timestep_s * 1000);
+
+            decimal realTimeWait_ms = timestep_ms / SpeedUp;
+
+            //TimeSpan RealtimeWait = new TimeSpan(0, 0, 0, 0, );
+
             while (SimulationOn)
             {
-                Thread.Sleep(timestep_ms);
+                await Task.Delay((int)realTimeWait_ms);
                 Time += timestep_s;
                 UpdatePosition();
 
                 // tmp code just to stop the design view eventually
-                if (Time == 3)
+                if (Time == MaxTime)
                 {
                     SimulationOn = false;
                 }
@@ -110,9 +131,9 @@ namespace MechanicsSimulator
             double angle_rad = (double) (Init_Angle * DegToRad);
 
             Position.X = Init_Position.X + Time * Init_Velocity.X * (decimal) Math.Cos(angle_rad); 
-            Position.Y = Init_Position.Y + Time * Init_Velocity.Y * (decimal) Math.Sin(angle_rad) - GRAVACC * Time;
+            Position.Y = Init_Position.Y + Time * Init_Velocity.Y * (decimal) Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
 
-            //History.Add(new Vector2D(Position.X, Position.Y));
+            History.Add(new Vector2D(Position));
         }
 
         private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -153,7 +174,7 @@ namespace MechanicsSimulator
 
         public Vector2D(Vector2D original) {
             X = original.X;
-            Y = original.X;
+            Y = original.Y;
         }
 
         public override string ToString()
