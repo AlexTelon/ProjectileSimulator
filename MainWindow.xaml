@@ -10,7 +10,18 @@
         <local:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid>
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="{Binding StartSimulationCommand}" Content="Start" />
+                <Button Command="{Binding StopSimulationCommand}" Content="Stop" />
+            </ToolBar>
+            <ToolBar>
+                <Button Command="{Binding SaveToFileCommand}" Content="Save" />
+                <Button Command="{Binding LoadFileCommand}" Content="Load" />
+                <Button Command="{Binding ViewSourceFileCommand}" Content="Open source file" />
+            </ToolBar>
+        </ToolBarTray>
         <StackPanel>
             <WrapPanel>
                 <Label Content="Time: "></Label>
@@ -21,12 +32,6 @@
                 <Label Content="{Binding Position.Y}"></Label>
             </WrapPanel>
 
-            <!--<Ellipse x:Name="Ball"
-                                     Fill="Black"
-                                     Canvas.Left="{Binding Position.X}"
-                                     Canvas.Bottom="{Binding Position.Y}"
-                                     Width="10"
-                                     Height="10"></Ellipse>-->
             <WrapPanel x:Name="MainViewPanel"
                        Height="300">
                 <ItemsControl ItemsSource="{Binding Path=History}">
@@ -70,23 +75,6 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <WrapPanel>
-                    <Button Content="Save"
-                            Command="{Binding SaveToFileCommand}"/>
-                    <Button Content="Load"
-                            Command="{Binding LoadFileCommand}"/>
-                    <Button Content="View source file"
-                            Command="{Binding ViewSourceFileCommand}"/>
-                </WrapPanel>
-            </WrapPanel>
-
-            <WrapPanel>
-                <Button Content="Start"
-                        Width="100"
-                        Command="{Binding StartSimulationCommand}"/>
-                <Button Content="Stop"
-                        Width="100"
-                        Command="{Binding StopSimulationCommand}"/>
             </WrapPanel>
 
             <WrapPanel>
@@ -100,7 +88,6 @@
                 <TextBox Text="{Binding SpeedUp}"/>
             </WrapPanel>
 
-
-        </StackPanel>
-    </Grid>
+            </StackPanel>
+    </DockPanel>
 </Window>
