@@ -16,6 +16,18 @@ namespace MechanicsSimulator
         public static readonly decimal DegToRad = (decimal)(Math.PI / 180);
         public static readonly decimal RadToDeg = (decimal)(180 / Math.PI);
 
+        public int WorldWidth
+        {
+            get => Get<int>();
+            set => Set(value);
+        }
+
+        public int WorldHeight
+        {
+            get => Get<int>();
+            set => Set(value);
+        }
+
         public ObservableCollection<Vector2D> History { get; set; } = new ObservableCollection<Vector2D>();
 
         public Vector2D Position
@@ -94,6 +106,9 @@ namespace MechanicsSimulator
             MaxTime = 30;
             SpeedUp = 10;
 
+            WorldHeight = 300;
+            WorldWidth = 500;
+
             Position.PropertyChanged += Position_PropertyChanged;
             //Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
 
@@ -116,11 +131,18 @@ namespace MechanicsSimulator
                 UpdatePosition();
 
                 // tmp code just to stop the design view eventually
-                if (Time == MaxTime || Position.Y < 0)
+                if (Time == MaxTime || IsOutOfBounds(Position))
                 {
                     SimulationOn = false;
                 }
             }
+        }
+
+        public bool IsOutOfBounds(Vector2D position)
+        {
+            return Position.Y < 0 || Position.Y > WorldHeight
+                                  || Position.X < 0
+                                  || Position.X > WorldWidth;
         }
 
         /// <summary>

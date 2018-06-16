@@ -31,8 +31,8 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Background="Aqua"
-                                Height="300"
-                                Width="300">
+                                Height="{Binding WorldHeight}"
+                                Width="{Binding WorldWidth}">
                         </Canvas>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
