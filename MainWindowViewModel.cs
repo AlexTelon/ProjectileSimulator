@@ -97,10 +97,10 @@ namespace MechanicsSimulator
             StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
 
-            Init_Position = new Vector2D(0, 50);
+            Init_Position = new Vector2D(0, 0);
 
             Position = new Vector2D(Init_Position);
-            Init_Velocity = 10m;
+            Init_Velocity = 40m;
             Init_Angle = 45;
 
             MaxTime = 30;

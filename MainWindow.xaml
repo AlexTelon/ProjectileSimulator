@@ -27,30 +27,36 @@
                                      Canvas.Bottom="{Binding Position.Y}"
                                      Width="10"
                                      Height="10"></Ellipse>-->
-            <ItemsControl ItemsSource="{Binding Path=History}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Background="Aqua"
+            <WrapPanel x:Name="MainViewPanel">
+                <ItemsControl ItemsSource="{Binding Path=History}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Background="Aqua"
                                 Height="{Binding WorldHeight}"
                                 Width="{Binding WorldWidth}">
-                        </Canvas>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Ellipse Fill="Black"
+                            </Canvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Ellipse Fill="Black"
                                  Width="5"
                                  Height="5"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="FrameworkElement">
-                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                        <Setter Property="Canvas.Bottom" Value="{Binding Y}" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-            </ItemsControl>
-            
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="FrameworkElement">
+                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                            <Setter Property="Canvas.Bottom" Value="{Binding Y}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+
+                <ListBox ItemsSource="{Binding History}"
+                         MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}">
+                </ListBox>
+            </WrapPanel>
+
             <WrapPanel>
                 <Button Content="Start"
                         Width="100"
@@ -71,7 +77,7 @@
                 <TextBox Text="{Binding SpeedUp}"/>
             </WrapPanel>
 
-       
+
         </StackPanel>
     </Grid>
 </Window>
