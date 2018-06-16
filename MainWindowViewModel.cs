@@ -7,9 +7,13 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using System.Xml;
 using Otto;
 using OttoCore;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace MechanicsSimulator
 {
@@ -108,6 +112,36 @@ namespace MechanicsSimulator
             }
         }
 
+        public RelayCommand<object> LoadFileCommand { get; set; }
+
+        private void OnLoadFile(object obj)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Load File";
+            dialog.Filter = "CSV file|*.csv";
+            if (dialog.ShowDialog() ?? DialogResult.Cancel == DialogResult.OK)
+            {
+                History.Clear();
+
+                using (System.IO.StreamReader file = new System.IO.StreamReader(dialog.FileName))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        var dataPoint = new HistoryPoint();
+
+                        var data = line.Split(',');
+                        dataPoint.TimeStamp = decimal.Parse(data[0], CultureInfo.InvariantCulture);
+                        dataPoint.Position.X = decimal.Parse(data[1], CultureInfo.InvariantCulture);
+                        dataPoint.Position.Y = decimal.Parse(data[2], CultureInfo.InvariantCulture);
+
+                        History.Add(dataPoint);
+                    }
+                }
+            }
+        }
+        
+
         public RelayCommand<object> OpenToFileCommand { get; set; }
         private void OnOpenFile(object obj)
         {
@@ -122,6 +156,8 @@ namespace MechanicsSimulator
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
             SaveToFileCommand = new RelayCommand<object>(OnSaveToFile);
             OpenToFileCommand = new RelayCommand<object>(OnOpenFile);
+            LoadFileCommand = new RelayCommand<object>(OnLoadFile);
+
 
             Init_Position = new Vector2D(0, 0);
 
@@ -214,6 +250,8 @@ namespace MechanicsSimulator
             set => Set(value);
         }
 
+        public Vector2D() { }
+
         public Vector2D(decimal x, decimal y)
         {
             X = x;
@@ -243,6 +281,11 @@ namespace MechanicsSimulator
         {
             get => Get<decimal>();
             set => Set(value);
+        }
+
+        public HistoryPoint()
+        {
+            Position = new Vector2D();
         }
 
         public HistoryPoint(Vector2D position, decimal timeStamp)
