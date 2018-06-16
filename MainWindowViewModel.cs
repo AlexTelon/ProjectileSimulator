@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Otto;
 using OttoCore;
 
@@ -28,7 +31,7 @@ namespace MechanicsSimulator
             set => Set(value);
         }
 
-        public ObservableCollection<Vector2D> History { get; set; } = new ObservableCollection<Vector2D>();
+        public ObservableCollection<HistoryPoint> History { get; set; } = new ObservableCollection<HistoryPoint>();
 
         public Vector2D Position
         {
@@ -92,10 +95,33 @@ namespace MechanicsSimulator
             SimulationOn = false;
         }
 
+        public RelayCommand<object> SaveToFileCommand { get; set; }
+
+        private void OnSaveToFile(object obj)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(FilePath))
+            {
+                foreach (var item in History)
+                {
+                    file.WriteLine(item.ToString());
+                }
+            }
+        }
+
+        public RelayCommand<object> OpenToFileCommand { get; set; }
+        private void OnOpenFile(object obj)
+        {
+            Process.Start(FilePath);
+        }
+
+        public string FilePath { get; set; } = "output.csv";
+
         public MainWindowViewModel()
         {
             StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
+            SaveToFileCommand = new RelayCommand<object>(OnSaveToFile);
+            OpenToFileCommand = new RelayCommand<object>(OnOpenFile);
 
             Init_Position = new Vector2D(0, 0);
 
@@ -155,7 +181,7 @@ namespace MechanicsSimulator
             Position.X = Init_Position.X + Time * Init_Velocity * (decimal) Math.Cos(angle_rad); 
             Position.Y = Init_Position.Y + Time * Init_Velocity * (decimal) Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
 
-            History.Add(new Vector2D(Position));
+            History.Add(new HistoryPoint(new Vector2D(Position), Time));
         }
 
         private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -201,7 +227,33 @@ namespace MechanicsSimulator
 
         public override string ToString()
         {
-            return "" + X + ", " + Y;
+            return "" + X.ToString(CultureInfo.InvariantCulture) + ", " + Y.ToString(CultureInfo.InvariantCulture);
+        }
+    }
+
+    class HistoryPoint : BindableBase
+    {
+        public Vector2D Position
+        {
+            get => Get<Vector2D>();
+            set => Set(value);
+        }
+
+        public decimal TimeStamp
+        {
+            get => Get<decimal>();
+            set => Set(value);
+        }
+
+        public HistoryPoint(Vector2D position, decimal timeStamp)
+        {
+            Position = position;
+            TimeStamp = timeStamp;
+        }
+
+        public override string ToString()
+        {
+            return TimeStamp.ToString(CultureInfo.InvariantCulture) + ", " + Position;
         }
     }
 }

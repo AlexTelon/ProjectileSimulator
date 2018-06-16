@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MechanicsSimulator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1000">
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
@@ -27,7 +27,8 @@
                                      Canvas.Bottom="{Binding Position.Y}"
                                      Width="10"
                                      Height="10"></Ellipse>-->
-            <WrapPanel x:Name="MainViewPanel">
+            <WrapPanel x:Name="MainViewPanel"
+                       Height="300">
                 <ItemsControl ItemsSource="{Binding Path=History}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -46,15 +47,35 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="FrameworkElement">
-                            <Setter Property="Canvas.Left" Value="{Binding X}" />
-                            <Setter Property="Canvas.Bottom" Value="{Binding Y}" />
+                            <Setter Property="Canvas.Left" Value="{Binding Position.X}" />
+                            <Setter Property="Canvas.Bottom" Value="{Binding Position.Y}" />
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
 
-                <ListBox ItemsSource="{Binding History}"
-                         MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}">
-                </ListBox>
+                <ListView ItemsSource="{Binding History}"
+                          MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}">
+                    <ListView.View>
+
+                        <GridView AllowsColumnReorder="true"
+                                  ColumnHeaderToolTip="Employee Information">
+                            <GridViewColumn Header="TimeStamp"
+                                            DisplayMemberBinding= "{Binding Path=TimeStamp}"/>
+                            <GridViewColumn Header="X"
+                                            DisplayMemberBinding= "{Binding Path=Position.X}"
+                                            Width="100"/>
+                            <GridViewColumn Header="Y"
+                                            DisplayMemberBinding= "{Binding Path=Position.Y}"
+                                            Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <WrapPanel>
+                    <Button Content="Save to file"
+                            Command="{Binding SaveToFileCommand}"/>
+                    <Button Content="Open file"
+                            Command="{Binding OpenToFileCommand}"/>
+                </WrapPanel>
             </WrapPanel>
 
             <WrapPanel>
