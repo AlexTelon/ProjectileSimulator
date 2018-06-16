@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Otto;
 using OttoCore;
@@ -9,15 +10,16 @@ namespace MechanicsSimulator
     {
         public static readonly decimal GRAVACC = 9.8067m;
 
-        public Position Position
+        public Vector2D Position
         {
-            get => Get<Position>();
+            get => Get<Vector2D>();
             set => Set(value);
         }
 
         public decimal Time { get; set; }
 
-        public decimal Init_Velocity { get; set; }
+        public decimal Init_Angle { get; set; }
+        public Vector2D Init_Velocity { get; set; }
 
         private bool SimulationOn = false;
 
@@ -35,6 +37,8 @@ namespace MechanicsSimulator
         private void OnStopSimulation(object obj)
         {
             SimulationOn = false;
+            Position.X = 0;
+            Position.Y = 0;
         }
 
         public MainWindowViewModel()
@@ -42,9 +46,11 @@ namespace MechanicsSimulator
             StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
 
-            Position = new Position(0, 0);
+            Position = new Vector2D(0, 0);
+            Init_Velocity = new Vector2D(10, 10);
 
             Position.PropertyChanged += Position_PropertyChanged;
+            Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged; ;
         }
 
         public void RunSimulation()
@@ -64,8 +70,8 @@ namespace MechanicsSimulator
         /// <param name="timeStep"></param>
         public void TimeStep(decimal timeStep)
         {
-            Position.X++;
-            Position.Y++;
+            Position.X += timeStep * Init_Velocity.X;
+            Position.Y += timeStep * Init_Velocity.Y;
         }
 
         private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -75,10 +81,17 @@ namespace MechanicsSimulator
                 OnPropertyChanged(nameof(Position));
             }
         }
+        private void Init_Velocity_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "X" || e.PropertyName == "Y")
+            {
+                OnPropertyChanged(nameof(Init_Velocity));
+            }
+        }
     }
 
-    
-    class Position : BindableBase
+
+    class Vector2D : BindableBase
     {
         public decimal X
         {
@@ -91,7 +104,7 @@ namespace MechanicsSimulator
             set => Set(value);
         }
 
-        public Position(decimal x, decimal y)
+        public Vector2D(decimal x, decimal y)
         {
             X = x;
             Y = y;

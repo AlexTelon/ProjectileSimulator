@@ -12,8 +12,7 @@
 
     <Grid>
         <StackPanel>
-            <Canvas x:Name="World"
-                    Background="Aqua"
+            <Canvas Background="Aqua"
                     Height="300"
                     Width="300">
                 <Ellipse x:Name="Ball"
@@ -24,16 +23,23 @@
                          Height="10"></Ellipse>
             </Canvas>
             <WrapPanel>
-                <Label Content="Init velocity: "></Label>
-                <TextBox Text="{Binding Init_Velocity}"
-                         Width="100"></TextBox>
                 <Button Content="Start"
                         Width="100"
-                        Command="{Binding StartSimulationCommand}"></Button>
-                <Button Content="Start"
+                        Command="{Binding StartSimulationCommand}"/>
+                <Button Content="Stop"
                         Width="100"
-                        Command="{Binding StopSimulationCommand}"></Button>
+                        Command="{Binding StopSimulationCommand}"/>
             </WrapPanel>
+
+            <WrapPanel>
+                <Label Content="Init velocity X: "></Label>
+                <TextBox Text="{Binding Init_Velocity.X}"/>
+                <Label Content="Init velocity Y: "></Label>
+                <TextBox Text="{Binding Init_Velocity.Y}"/>
+                <Label Content="Init angle: "/>
+                <TextBox Text="{Binding Init_Angle}"/>
+            </WrapPanel>
+
             <WrapPanel>
                 <Label Content="X: "></Label>
                 <Label Content="{Binding Position.X}"></Label>
