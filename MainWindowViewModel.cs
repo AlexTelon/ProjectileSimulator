@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Otto;
@@ -29,6 +30,7 @@ namespace MechanicsSimulator
         }
 
         public ObservableCollection<HistoryPoint> History { get; set; } = new ObservableCollection<HistoryPoint>();
+
 
         public Vector2D Position
         {
@@ -148,6 +150,23 @@ namespace MechanicsSimulator
             Process.Start(FilePath);
         }
 
+        public ObservableCollection<string> FilesInCurrentFolder { get; set; } = new ObservableCollection<string>();
+
+        public RelayCommand<object> UpdateFilesInCurrentFolderCommand { get; set; }
+        private void OnUpdateFilesInCurrentFolder(object obj)
+        {
+            FilesInCurrentFolder.Clear();
+            foreach (var file in Directory.GetFiles("."))
+            {
+                var extenstion = Path.GetExtension(file);
+                if (extenstion == ".csv")
+                {
+                    FilesInCurrentFolder.Add(Path.GetFileName(file));
+                }
+            }
+        }
+        
+
         public string FilePath { get; set; } = "output.csv";
 
         public MainWindowViewModel()
@@ -157,7 +176,7 @@ namespace MechanicsSimulator
             SaveToFileCommand = new RelayCommand<object>(OnSaveToFile);
             ViewSourceFileCommand = new RelayCommand<object>(OnViewSourceFile);
             LoadFileCommand = new RelayCommand<object>(OnLoadFile);
-
+            UpdateFilesInCurrentFolderCommand = new RelayCommand<object>(OnUpdateFilesInCurrentFolder);
 
             Init_Position = new Vector2D(0, 0);
 
@@ -174,7 +193,8 @@ namespace MechanicsSimulator
             Position.PropertyChanged += Position_PropertyChanged;
             //Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
 
-            StartSimulationCommand.Execute(null);
+            //StartSimulationCommand.Execute(null);
+            UpdateFilesInCurrentFolderCommand.Execute(null);
         }
 
         public async Task RunSimulation()

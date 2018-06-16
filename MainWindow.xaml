@@ -75,7 +75,39 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+
+
+                <StackPanel>
+                    <Button Content="Update"
+                            Command="{Binding UpdateFilesInCurrentFolderCommand}"></Button>
+                    <ListView ItemsSource="{Binding FilesInCurrentFolder}"
+                          MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}">
+                        <ListView.View>
+
+                            <GridView AllowsColumnReorder="false"
+                                      ColumnHeaderToolTip="Files in current folder">
+
+                                <GridViewColumn Header="Include">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="FileName">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding}"></Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
             </WrapPanel>
+
 
             <WrapPanel>
                 <Label Content="Init velocity: "></Label>
@@ -88,6 +120,6 @@
                 <TextBox Text="{Binding SpeedUp}"/>
             </WrapPanel>
 
-            </StackPanel>
+        </StackPanel>
     </DockPanel>
 </Window>
