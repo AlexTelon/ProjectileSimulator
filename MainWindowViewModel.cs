@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Otto;
 using OttoCore;
-using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace MechanicsSimulator
@@ -124,25 +125,43 @@ namespace MechanicsSimulator
             if (dialog.ShowDialog() ?? DialogResult.Cancel == DialogResult.OK)
             {
                 History.Clear();
+                LoadFile(dialog.FileName);
+            }
+        }
 
-                using (System.IO.StreamReader file = new System.IO.StreamReader(dialog.FileName))
+        public RelayCommand<object> LoadMultipleFilesCommand { get; set; }
+
+        private void OnLoadMultipleFiles(object obj)
+        {
+            var files = obj as IList;
+            if (files == null) return;
+
+            History.Clear();
+            foreach (string file in files)
+            {
+                LoadFile(file);
+            }
+        }
+
+        public void LoadFile(string name)
+        {
+            using (System.IO.StreamReader file = new System.IO.StreamReader(name))
+            {
+                string line;
+                while ((line = file.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        var dataPoint = new HistoryPoint();
+                    var dataPoint = new HistoryPoint();
 
-                        var data = line.Split(',');
-                        dataPoint.TimeStamp = decimal.Parse(data[0], CultureInfo.InvariantCulture);
-                        dataPoint.Position.X = decimal.Parse(data[1], CultureInfo.InvariantCulture);
-                        dataPoint.Position.Y = decimal.Parse(data[2], CultureInfo.InvariantCulture);
+                    var data = line.Split(',');
+                    dataPoint.TimeStamp = decimal.Parse(data[0], CultureInfo.InvariantCulture);
+                    dataPoint.Position.X = decimal.Parse(data[1], CultureInfo.InvariantCulture);
+                    dataPoint.Position.Y = decimal.Parse(data[2], CultureInfo.InvariantCulture);
 
-                        History.Add(dataPoint);
-                    }
+                    History.Add(dataPoint);
                 }
             }
         }
-        
+
 
         public RelayCommand<object> ViewSourceFileCommand { get; set; }
         private void OnViewSourceFile(object obj)
@@ -165,7 +184,6 @@ namespace MechanicsSimulator
                 }
             }
         }
-        
 
         public string FilePath { get; set; } = "output.csv";
 
@@ -177,6 +195,8 @@ namespace MechanicsSimulator
             ViewSourceFileCommand = new RelayCommand<object>(OnViewSourceFile);
             LoadFileCommand = new RelayCommand<object>(OnLoadFile);
             UpdateFilesInCurrentFolderCommand = new RelayCommand<object>(OnUpdateFilesInCurrentFolder);
+            LoadMultipleFilesCommand = new RelayCommand<object>(OnLoadMultipleFiles);
+
 
             Init_Position = new Vector2D(0, 0);
 
@@ -191,16 +211,14 @@ namespace MechanicsSimulator
             WorldWidth = 500;
 
             Position.PropertyChanged += Position_PropertyChanged;
-            //Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
 
-            //StartSimulationCommand.Execute(null);
             UpdateFilesInCurrentFolderCommand.Execute(null);
         }
 
         public async Task RunSimulation()
         {
             decimal timestep_s = 0.1m;
-            int timestep_ms = (int) (timestep_s * 1000);
+            int timestep_ms = (int)(timestep_s * 1000);
 
             decimal realTimeWait_ms = timestep_ms;
             if (SpeedUp == 0)
@@ -212,8 +230,6 @@ namespace MechanicsSimulator
             {
                 realTimeWait_ms /= SpeedUp;
             }
-
-            //TimeSpan RealtimeWait = new TimeSpan(0, 0, 0, 0, );
 
             while (SimulationOn)
             {
@@ -236,15 +252,12 @@ namespace MechanicsSimulator
                                   || Position.X > WorldWidth;
         }
 
-        /// <summary>
-        /// Time in seconds
-        /// </summary>
         public void UpdatePosition()
         {
-            double angle_rad = (double) (Init_Angle * DegToRad);
+            double angle_rad = (double)(Init_Angle * DegToRad);
 
-            Position.X = Init_Position.X + Time * Init_Velocity * (decimal) Math.Cos(angle_rad); 
-            Position.Y = Init_Position.Y + Time * Init_Velocity * (decimal) Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
+            Position.X = Init_Position.X + Time * Init_Velocity * (decimal)Math.Cos(angle_rad);
+            Position.Y = Init_Position.Y + Time * Init_Velocity * (decimal)Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
 
             History.Add(new HistoryPoint(new Vector2D(Position), Time));
         }

@@ -78,22 +78,30 @@
 
 
                 <StackPanel>
-                    <Button Content="Update"
-                            Command="{Binding UpdateFilesInCurrentFolderCommand}"></Button>
-                    <ListView ItemsSource="{Binding FilesInCurrentFolder}"
-                          MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}">
+                    <WrapPanel>
+                        <Button Content="Load selected files"
+                                Command="{Binding LoadMultipleFilesCommand}"
+                                CommandParameter="{Binding ElementName=FilesInCurrentFolderView, Path=SelectedItems}"/>
+                        <Button Content="Update"
+                                Command="{Binding UpdateFilesInCurrentFolderCommand}"/>
+                    </WrapPanel>
+
+                    <ListView x:Name="FilesInCurrentFolderView"
+                              ItemsSource="{Binding FilesInCurrentFolder}"
+                              MaxHeight="{Binding ElementName=MainViewPanel, Path=ActualHeight}"
+                              SelectionMode="Extended">
                         <ListView.View>
 
                             <GridView AllowsColumnReorder="false"
                                       ColumnHeaderToolTip="Files in current folder">
 
-                                <GridViewColumn Header="Include">
+                                <!--<GridViewColumn Header="Include">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                </GridViewColumn>-->
 
                                 <GridViewColumn Header="FileName">
                                     <GridViewColumn.CellTemplate>
