@@ -166,7 +166,7 @@ namespace MechanicsSimulator
             Init_Angle = 45;
 
             MaxTime = 30;
-            SpeedUp = 10;
+            SpeedUp = 0; // speedup of 0 means finish ASAP
 
             WorldHeight = 300;
             WorldWidth = 500;
@@ -182,7 +182,16 @@ namespace MechanicsSimulator
             decimal timestep_s = 0.1m;
             int timestep_ms = (int) (timestep_s * 1000);
 
-            decimal realTimeWait_ms = timestep_ms / SpeedUp;
+            decimal realTimeWait_ms = timestep_ms;
+            if (SpeedUp == 0)
+            {
+                // no waiting, go for ASAP speed
+                realTimeWait_ms = 0;
+            }
+            else
+            {
+                realTimeWait_ms /= SpeedUp;
+            }
 
             //TimeSpan RealtimeWait = new TimeSpan(0, 0, 0, 0, );
 
