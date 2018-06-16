@@ -53,9 +53,9 @@ namespace MechanicsSimulator
             set => Set(value);
         }
 
-        public Vector2D Init_Velocity
+        public decimal Init_Velocity
         {
-            get => Get<Vector2D>();
+            get => Get<decimal>();
             set => Set(value);
         }
 
@@ -88,14 +88,14 @@ namespace MechanicsSimulator
             Init_Position = new Vector2D(0, 50);
 
             Position = new Vector2D(Init_Position);
-            Init_Velocity = new Vector2D(10, 10);
+            Init_Velocity = 10m;
             Init_Angle = 45;
 
-            MaxTime = 10;
-            SpeedUp = 3;
+            MaxTime = 30;
+            SpeedUp = 10;
 
             Position.PropertyChanged += Position_PropertyChanged;
-            Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
+            //Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
 
             StartSimulationCommand.Execute(null);
         }
@@ -116,7 +116,7 @@ namespace MechanicsSimulator
                 UpdatePosition();
 
                 // tmp code just to stop the design view eventually
-                if (Time == MaxTime)
+                if (Time == MaxTime || Position.Y < 0)
                 {
                     SimulationOn = false;
                 }
@@ -130,8 +130,8 @@ namespace MechanicsSimulator
         {
             double angle_rad = (double) (Init_Angle * DegToRad);
 
-            Position.X = Init_Position.X + Time * Init_Velocity.X * (decimal) Math.Cos(angle_rad); 
-            Position.Y = Init_Position.Y + Time * Init_Velocity.Y * (decimal) Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
+            Position.X = Init_Position.X + Time * Init_Velocity * (decimal) Math.Cos(angle_rad); 
+            Position.Y = Init_Position.Y + Time * Init_Velocity * (decimal) Math.Sin(angle_rad) - 0.5m * GRAVACC * Time * Time;
 
             History.Add(new Vector2D(Position));
         }

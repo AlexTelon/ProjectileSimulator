@@ -61,10 +61,8 @@
             </WrapPanel>
 
             <WrapPanel>
-                <Label Content="Init velocity X: "></Label>
-                <TextBox Text="{Binding Init_Velocity.X}"/>
-                <Label Content="Init velocity Y: "></Label>
-                <TextBox Text="{Binding Init_Velocity.Y}"/>
+                <Label Content="Init velocity: "></Label>
+                <TextBox Text="{Binding Init_Velocity}"/>
                 <Label Content="Init angle: "/>
                 <TextBox Text="{Binding Init_Angle}"/>
                 <Label Content="Max Time: "/>
