@@ -12,6 +12,14 @@
 
     <Grid>
         <StackPanel>
+            <WrapPanel>
+                <Label Content="Time: "></Label>
+                <Label Content="{Binding Time}"></Label>
+                <Label Content="X: "></Label>
+                <Label Content="{Binding Position.X}"></Label>
+                <Label Content="Y: "></Label>
+                <Label Content="{Binding Position.Y}"></Label>
+            </WrapPanel>
             <Canvas Background="Aqua"
                     Height="300"
                     Width="300">
@@ -40,14 +48,7 @@
                 <TextBox Text="{Binding Init_Angle}"/>
             </WrapPanel>
 
-            <WrapPanel>
-                <Label Content="Time: "></Label>
-                <Label Content="{Binding Time}"></Label>
-                <Label Content="X: "></Label>
-                <Label Content="{Binding Position.X}"></Label>
-                <Label Content="Y: "></Label>
-                <Label Content="{Binding Position.Y}"></Label>
-            </WrapPanel>
+       
         </StackPanel>
     </Grid>
 </Window>

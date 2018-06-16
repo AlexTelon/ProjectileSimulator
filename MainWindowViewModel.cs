@@ -75,7 +75,9 @@ namespace MechanicsSimulator
             Init_Angle = 45;
 
             Position.PropertyChanged += Position_PropertyChanged;
-            Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged; ;
+            Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged;
+
+            StartSimulationCommand.Execute(null);
         }
 
         public void RunSimulation()
