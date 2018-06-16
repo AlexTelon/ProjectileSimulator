@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using OttoCore;
 
@@ -10,8 +6,6 @@ namespace MechanicsSimulator
 {
     class MainWindowViewModel : BindableBase
     {
-        public string Test { get; set; } = "Test";
-
         public Position Position
         {
             get => Get<Position>();
@@ -59,18 +53,18 @@ namespace MechanicsSimulator
     
     class Position : BindableBase
     {
-        public int X
+        public decimal X
         {
-            get => Get<int>();
+            get => Get<decimal>();
             set => Set(value);
         }
-        public int Y
+        public decimal Y
         {
-            get => Get<int>();
+            get => Get<decimal>();
             set => Set(value);
         }
 
-        public Position(int x, int y)
+        public Position(decimal x, decimal y)
         {
             X = x;
             Y = y;

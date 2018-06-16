@@ -12,7 +12,6 @@
 
     <Grid>
         <StackPanel>
-            <Label Content="{Binding Test}"></Label>
             <Canvas x:Name="World"
                     Background="Aqua"
                     Height="300"
