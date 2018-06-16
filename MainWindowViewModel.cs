@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Otto;
@@ -9,6 +10,9 @@ namespace MechanicsSimulator
     class MainWindowViewModel : BindableBase
     {
         public static readonly decimal GRAVACC = 9.8067m;
+        public static readonly decimal DegToRad = (decimal)(Math.PI / 180);
+        public static readonly decimal RadToDeg = (decimal)(180 / Math.PI);
+
 
         public Vector2D Position
         {
@@ -16,10 +20,28 @@ namespace MechanicsSimulator
             set => Set(value);
         }
 
-        public decimal Time { get; set; }
+        public decimal Time
+        {
+            get => Get<decimal>();
+            set => Set(value);
+        }
+        public Vector2D Init_Position
+        {
+            get => Get<Vector2D>();
+            set => Set(value);
+        }
 
-        public decimal Init_Angle { get; set; }
-        public Vector2D Init_Velocity { get; set; }
+        public decimal Init_Angle
+        {
+            get => Get<decimal>();
+            set => Set(value);
+        }
+
+        public Vector2D Init_Velocity
+        {
+            get => Get<Vector2D>();
+            set => Set(value);
+        }
 
         private bool SimulationOn = false;
 
@@ -37,8 +59,8 @@ namespace MechanicsSimulator
         private void OnStopSimulation(object obj)
         {
             SimulationOn = false;
-            Position.X = 0;
-            Position.Y = 0;
+            Position.X = Init_Position.X;
+            Position.Y = Init_Position.Y;
         }
 
         public MainWindowViewModel()
@@ -46,8 +68,11 @@ namespace MechanicsSimulator
             StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
 
-            Position = new Vector2D(0, 0);
+            Init_Position = new Vector2D(0, 50);
+
+            Position = Init_Position;
             Init_Velocity = new Vector2D(10, 10);
+            Init_Angle = 45;
 
             Position.PropertyChanged += Position_PropertyChanged;
             Init_Velocity.PropertyChanged += Init_Velocity_PropertyChanged; ;
@@ -60,18 +85,20 @@ namespace MechanicsSimulator
             while (SimulationOn)
             {
                 Thread.Sleep(timestep_ms);
-                TimeStep(timestep_s);
+                Time += timestep_s;
+                UpdatePosition();
             }
         }
 
         /// <summary>
         /// Time in seconds
         /// </summary>
-        /// <param name="timeStep"></param>
-        public void TimeStep(decimal timeStep)
+        public void UpdatePosition()
         {
-            Position.X += timeStep * Init_Velocity.X;
-            Position.Y += timeStep * Init_Velocity.Y;
+            double angle_rad = (double) (Init_Angle * DegToRad);
+
+            Position.X = Init_Position.X + Time * Init_Velocity.X * (decimal) Math.Cos(angle_rad); 
+            Position.Y = Init_Position.Y + Time * Init_Velocity.Y * (decimal) Math.Sin(angle_rad) - GRAVACC * Time;
         }
 
         private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

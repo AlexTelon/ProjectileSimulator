@@ -41,6 +41,8 @@
             </WrapPanel>
 
             <WrapPanel>
+                <Label Content="Time: "></Label>
+                <Label Content="{Binding Time}"></Label>
                 <Label Content="X: "></Label>
                 <Label Content="{Binding Position.X}"></Label>
                 <Label Content="Y: "></Label>
