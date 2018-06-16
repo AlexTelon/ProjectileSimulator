@@ -24,6 +24,17 @@
                          Height="10"></Ellipse>
             </Canvas>
             <WrapPanel>
+                <Label Content="Init velocity: "></Label>
+                <TextBox Text="{Binding Init_Velocity}"
+                         Width="100"></TextBox>
+                <Button Content="Start"
+                        Width="100"
+                        Command="{Binding StartSimulationCommand}"></Button>
+                <Button Content="Start"
+                        Width="100"
+                        Command="{Binding StopSimulationCommand}"></Button>
+            </WrapPanel>
+            <WrapPanel>
                 <Label Content="X: "></Label>
                 <Label Content="{Binding Position.X}"></Label>
                 <Label Content="Y: "></Label>

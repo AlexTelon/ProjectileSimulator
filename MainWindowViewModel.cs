@@ -1,41 +1,68 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Otto;
 using OttoCore;
 
 namespace MechanicsSimulator
 {
     class MainWindowViewModel : BindableBase
     {
+        public static readonly decimal GRAVACC = 9.8067m;
+
         public Position Position
         {
             get => Get<Position>();
             set => Set(value);
         }
 
+        public decimal Time { get; set; }
+
+        public decimal Init_Velocity { get; set; }
+
+        private bool SimulationOn = false;
+
+        public RelayCommand<object> StartSimulationCommand { get; set; }
+
+        private void OnStartSimulation(object obj)
+        {
+            Time = 0;
+            SimulationOn = true;
+            Task.Run(() => RunSimulation());
+        }
+
+        public RelayCommand<object> StopSimulationCommand { get; set; }
+
+        private void OnStopSimulation(object obj)
+        {
+            SimulationOn = false;
+        }
+
         public MainWindowViewModel()
         {
+            StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
+            StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
+
             Position = new Position(0, 0);
 
             Position.PropertyChanged += Position_PropertyChanged;
-
-            Task.Run(() => RunSimulation());
         }
 
         public void RunSimulation()
         {
-            var timeStep_ms = 100;
-            while (true)
+            decimal timestep_s = 0.1m;
+            int timestep_ms = (int) (timestep_s * 1000);
+            while (SimulationOn)
             {
-                Thread.Sleep(timeStep_ms);
-                TimeStep(timeStep_ms);
+                Thread.Sleep(timestep_ms);
+                TimeStep(timestep_s);
             }
         }
 
         /// <summary>
-        /// Time in ms
+        /// Time in seconds
         /// </summary>
         /// <param name="timeStep"></param>
-        public void TimeStep(int timeStep)
+        public void TimeStep(decimal timeStep)
         {
             Position.X++;
             Position.Y++;
