@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -103,11 +104,19 @@ namespace MechanicsSimulator
 
         private void OnSaveToFile(object obj)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(FilePath))
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "CSV file|*.csv";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                foreach (var item in History)
+                var fileName = dialog.FileName;
+
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
                 {
-                    file.WriteLine(item.ToString());
+                    foreach (var item in History)
+                    {
+                        file.WriteLine(item.ToString());
+                    }
                 }
             }
         }
@@ -117,7 +126,6 @@ namespace MechanicsSimulator
         private void OnLoadFile(object obj)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Load File";
             dialog.Filter = "CSV file|*.csv";
             if (dialog.ShowDialog() ?? DialogResult.Cancel == DialogResult.OK)
             {
@@ -142,8 +150,8 @@ namespace MechanicsSimulator
         }
         
 
-        public RelayCommand<object> OpenToFileCommand { get; set; }
-        private void OnOpenFile(object obj)
+        public RelayCommand<object> ViewSourceFileCommand { get; set; }
+        private void OnViewSourceFile(object obj)
         {
             Process.Start(FilePath);
         }
@@ -155,7 +163,7 @@ namespace MechanicsSimulator
             StartSimulationCommand = new RelayCommand<object>(OnStartSimulation);
             StopSimulationCommand = new RelayCommand<object>(OnStopSimulation);
             SaveToFileCommand = new RelayCommand<object>(OnSaveToFile);
-            OpenToFileCommand = new RelayCommand<object>(OnOpenFile);
+            ViewSourceFileCommand = new RelayCommand<object>(OnViewSourceFile);
             LoadFileCommand = new RelayCommand<object>(OnLoadFile);
 
 

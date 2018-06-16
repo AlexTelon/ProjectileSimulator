@@ -75,8 +75,8 @@
                             Command="{Binding SaveToFileCommand}"/>
                     <Button Content="Load"
                             Command="{Binding LoadFileCommand}"/>
-                    <Button Content="Open file"
-                            Command="{Binding OpenToFileCommand}"/>
+                    <Button Content="View source file"
+                            Command="{Binding ViewSourceFileCommand}"/>
                 </WrapPanel>
             </WrapPanel>
 
