@@ -11,6 +11,25 @@
     </Window.DataContext>
 
     <Grid>
-        <Label Content="{Binding Test}"></Label>
+        <StackPanel>
+            <Label Content="{Binding Test}"></Label>
+            <Canvas x:Name="World"
+                    Background="Aqua"
+                    Height="300"
+                    Width="300">
+                <Ellipse x:Name="Ball"
+                         Fill="Black"
+                         Canvas.Left="{Binding Position.X}"
+                         Canvas.Bottom="{Binding Position.Y}"
+                         Width="10"
+                         Height="10"></Ellipse>
+            </Canvas>
+            <WrapPanel>
+                <Label Content="X: "></Label>
+                <Label Content="{Binding Position.X}"></Label>
+                <Label Content="Y: "></Label>
+                <Label Content="{Binding Position.Y}"></Label>
+            </WrapPanel>
+        </StackPanel>
     </Grid>
 </Window>
