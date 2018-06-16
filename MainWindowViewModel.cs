@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using System.Xml;
 using Otto;
 using OttoCore;
 using MessageBox = System.Windows.MessageBox;
@@ -22,7 +15,6 @@ namespace MechanicsSimulator
     {
         public static readonly decimal GRAVACC = 9.8067m;
         public static readonly decimal DegToRad = (decimal)(Math.PI / 180);
-        public static readonly decimal RadToDeg = (decimal)(180 / Math.PI);
 
         public int WorldWidth
         {
@@ -234,77 +226,6 @@ namespace MechanicsSimulator
             {
                 OnPropertyChanged(nameof(Position));
             }
-        }
-        private void Init_Velocity_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "X" || e.PropertyName == "Y")
-            {
-                OnPropertyChanged(nameof(Init_Velocity));
-            }
-        }
-    }
-
-
-    class Vector2D : BindableBase
-    {
-        public decimal X
-        {
-            get => Get<decimal>();
-            set => Set(value);
-        }
-        public decimal Y
-        {
-            get => Get<decimal>();
-            set => Set(value);
-        }
-
-        public Vector2D() { }
-
-        public Vector2D(decimal x, decimal y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public Vector2D(Vector2D original) {
-            X = original.X;
-            Y = original.Y;
-        }
-
-        public override string ToString()
-        {
-            return "" + X.ToString(CultureInfo.InvariantCulture) + ", " + Y.ToString(CultureInfo.InvariantCulture);
-        }
-    }
-
-    class HistoryPoint : BindableBase
-    {
-        public Vector2D Position
-        {
-            get => Get<Vector2D>();
-            set => Set(value);
-        }
-
-        public decimal TimeStamp
-        {
-            get => Get<decimal>();
-            set => Set(value);
-        }
-
-        public HistoryPoint()
-        {
-            Position = new Vector2D();
-        }
-
-        public HistoryPoint(Vector2D position, decimal timeStamp)
-        {
-            Position = position;
-            TimeStamp = timeStamp;
-        }
-
-        public override string ToString()
-        {
-            return TimeStamp.ToString(CultureInfo.InvariantCulture) + ", " + Position;
         }
     }
 }
