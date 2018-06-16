@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace MechanicsSimulator
         public static readonly decimal DegToRad = (decimal)(Math.PI / 180);
         public static readonly decimal RadToDeg = (decimal)(180 / Math.PI);
 
+        public ObservableCollection<Vector2D> History { get; set; } = new ObservableCollection<Vector2D>();
 
         public Vector2D Position
         {
@@ -25,6 +28,7 @@ namespace MechanicsSimulator
             get => Get<decimal>();
             set => Set(value);
         }
+
         public Vector2D Init_Position
         {
             get => Get<Vector2D>();
@@ -50,6 +54,8 @@ namespace MechanicsSimulator
         private void OnStartSimulation(object obj)
         {
             Time = 0;
+            Position.X = Init_Position.X;
+            Position.Y = Init_Position.Y;
             SimulationOn = true;
             Task.Run(() => RunSimulation());
         }
@@ -59,8 +65,6 @@ namespace MechanicsSimulator
         private void OnStopSimulation(object obj)
         {
             SimulationOn = false;
-            Position.X = Init_Position.X;
-            Position.Y = Init_Position.Y;
         }
 
         public MainWindowViewModel()
@@ -70,7 +74,7 @@ namespace MechanicsSimulator
 
             Init_Position = new Vector2D(0, 50);
 
-            Position = Init_Position;
+            Position = new Vector2D(Init_Position);
             Init_Velocity = new Vector2D(10, 10);
             Init_Angle = 45;
 
@@ -89,6 +93,12 @@ namespace MechanicsSimulator
                 Thread.Sleep(timestep_ms);
                 Time += timestep_s;
                 UpdatePosition();
+
+                // tmp code just to stop the design view eventually
+                if (Time == 3)
+                {
+                    SimulationOn = false;
+                }
             }
         }
 
@@ -101,6 +111,8 @@ namespace MechanicsSimulator
 
             Position.X = Init_Position.X + Time * Init_Velocity.X * (decimal) Math.Cos(angle_rad); 
             Position.Y = Init_Position.Y + Time * Init_Velocity.Y * (decimal) Math.Sin(angle_rad) - GRAVACC * Time;
+
+            //History.Add(new Vector2D(Position.X, Position.Y));
         }
 
         private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -137,6 +149,11 @@ namespace MechanicsSimulator
         {
             X = x;
             Y = y;
+        }
+
+        public Vector2D(Vector2D original) {
+            X = original.X;
+            Y = original.X;
         }
 
         public override string ToString()
